@@ -1,0 +1,101 @@
+#############################################
+# Laravel Modular Core System — Git Ignore
+# Purpose: keep repository clean & secure
+#############################################
+
+
+#############################################
+# Dependency Directories
+#############################################
+
+/vendor/
+/node_modules/
+
+# allow vendor inside resources (rare case)
+!resources/**/vendor/
+
+
+#############################################
+# Environment Files
+#############################################
+
+.env
+.env.*
+!.env.example
+
+
+#############################################
+# Laravel Runtime Files
+#############################################
+
+/storage/*.key
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+
+
+#############################################
+# Build / Asset Artifacts
+#############################################
+
+/public/build/
+/public/hot
+/public/hot/
+/public/storage
+
+
+#############################################
+# PHP / Testing Artifacts
+#############################################
+
+.phpunit.result.cache
+*.test*
+
+
+#############################################
+# Package Manager Logs
+#############################################
+
+npm-debug.log
+yarn-error.log
+
+
+#############################################
+# Local Development Tools
+#############################################
+
+auth.json
+Homestead.json
+Homestead.yaml
+
+
+#############################################
+# IDE / Editor Settings
+#############################################
+
+.idea/
+.fleet/
+
+# optional workspace files
+.vscode/*.code-workspace
+
+
+#############################################
+# OS Generated Files
+#############################################
+
+.DS_Store
+Thumbs.db
+
+#############################################
+# IDE Helper
+#############################################
+
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+
+
+#sementara
+/public/assets

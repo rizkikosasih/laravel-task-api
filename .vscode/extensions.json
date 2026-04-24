@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "onecentlin.laravel-extension-pack",
+    "bmewburn.vscode-intelephense-client",
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "formulahendry.auto-complete-tag",
+    "abusaidm.html-snippets",
+    "ecmel.vscode-html-css",
+    "zignd.html-css-class-completion",
+    "recca0120.vscode-phpunit",
+    "onecentlin.phpunit-snippets"
+  ]
+}

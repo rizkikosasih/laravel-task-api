@@ -1,0 +1,3 @@
+assets/
+public/assets/**
+!public/assets/modules/**
