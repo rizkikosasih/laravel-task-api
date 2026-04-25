@@ -9,7 +9,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 {
     public function all()
     {
-        return Project::latest()->get();
+        return Project::latest()->paginate(10);
     }
 
     public function find($id)

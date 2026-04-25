@@ -5,36 +5,60 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
         // reset cache
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        // permissions
+        /*
+        |-----------------------
+        | PERMISSIONS
+        |-----------------------
+        */
         $permissions = [
             'create project',
             'update project',
             'delete project',
+
             'create task',
             'update task',
             'delete task',
-            'comment task',
+
+            'create task comment',
+            'delete task comment',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
-        }
+        $permissionModels = collect($permissions)->map(function ($permission) {
+            return Permission::firstOrCreate(['name' => $permission]);
+        });
 
-        // roles
+        /*
+        |-----------------------
+        | ROLES
+        |-----------------------
+        */
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $member = Role::firstOrCreate(['name' => 'member']);
 
-        // assign permissions
-        $admin->givePermissionTo(Permission::all());
+        /*
+        |-----------------------
+        | ASSIGN PERMISSIONS
+        |-----------------------
+        */
 
-        $member->givePermissionTo(['create task', 'update task', 'comment task']);
+        // admin → semua permission
+        $admin->syncPermissions($permissionModels);
+
+        // member → limited access
+        $member->syncPermissions([
+            Permission::findByName('create task'),
+            Permission::findByName('update task'),
+            Permission::findByName('create task comment'),
+            Permission::findByName('delete task comment'),
+        ]);
     }
 }

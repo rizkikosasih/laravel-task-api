@@ -27,8 +27,14 @@ class User extends Authenticatable
         ];
     }
 
+    /* Relations */
     public function projects()
     {
         return $this->hasMany(Project::class, 'created_by');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }
