@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Task\StoreTaskRequest;
+use App\Http\Requests\Task\UpdateTaskStatusRequest;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
 
@@ -21,19 +23,23 @@ class TaskController extends Controller
         return $this->service->getById($id);
     }
 
-    public function store(Request $request)
+    public function store(StoreTaskRequest $request)
     {
-        return $this->service->create($request->all());
+        return $this->service->create($request->validate());
     }
 
-    public function update(Request $request, $id)
+    public function update(StoreTaskRequest $request, $id)
     {
-        return $this->service->update($id, $request->all());
+        return $this->service->update($id, $request->validate());
     }
 
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(UpdateTaskStatusRequest $request, $id)
     {
-        return $this->service->updateStatus($id, $request->status);
+        $status = $request->validated()['status'];
+
+        $task = $this->service->updateStatus($id, $status);
+
+        return response()->json($task);
     }
 
     public function destroy($id)

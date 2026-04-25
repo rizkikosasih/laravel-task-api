@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Project\StoreProjectRequest;
+use App\Http\Requests\Project\UpdateProjectRequest;
 use Illuminate\Http\Request;
 use App\Services\ProjectService;
 
@@ -14,9 +16,9 @@ class ProjectController extends Controller
         return $this->service->list($request->only(['search', 'created_by']));
     }
 
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        return $this->service->create($request->all(), $request->user()->id);
+        return $this->service->create($request->validate(), $request->user()->id);
     }
 
     public function show($id)
@@ -24,9 +26,9 @@ class ProjectController extends Controller
         return $this->service->getById($id);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateProjectRequest $request, $id)
     {
-        return $this->service->update($id, $request->all());
+        return $this->service->update($id, $request->validate());
     }
 
     public function destroy($id)
