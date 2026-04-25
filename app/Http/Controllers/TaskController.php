@@ -11,7 +11,9 @@ class TaskController extends Controller
 
     public function index(Request $request)
     {
-        return $this->service->list($request->all());
+        return $this->service->list(
+            $request->only(['search', 'project_id', 'assigned_to', 'status', 'per_page']),
+        );
     }
 
     public function show($id)

@@ -10,17 +10,21 @@ class TaskRepository implements TaskRepositoryInterface
     public function all(array $filters)
     {
         return Task::query()
-            ->when(isset($filters['project_id']), function ($q) use ($filters) {
-                $q->where('project_id', $filters['project_id']);
-            })
-            ->when(isset($filters['status']), function ($q) use ($filters) {
-                $q->where('status', $filters['status']);
-            })
-            ->when(isset($filters['assigned_to']), function ($q) use ($filters) {
-                $q->where('assigned_to', $filters['assigned_to']);
-            })
+            ->when(
+                $filters['search'] ?? null,
+                fn($q, $search) => $q->where('title', 'like', "%{$search}%"),
+            )
+            ->when(
+                $filters['project_id'] ?? null,
+                fn($q, $projectId) => $q->where('project_id', $projectId),
+            )
+            ->when($filters['status'] ?? null, fn($q, $status) => $q->where('status', $status))
+            ->when(
+                $filters['assigned_to'] ?? null,
+                fn($q, $assignedTo) => $q->where('assigned_to', $assignedTo),
+            )
             ->latest()
-            ->paginate(10);
+            ->paginate($filters['per_page'] ?? 10);
     }
 
     public function find(int $id)
