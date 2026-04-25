@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Task\IndexTaskRequest;
 use App\Http\Requests\Task\StoreTaskRequest;
 use App\Http\Requests\Task\UpdateTaskStatusRequest;
 use App\Services\TaskService;
-use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     public function __construct(protected TaskService $service) {}
 
-    public function index(Request $request)
+    public function index(IndexTaskRequest $request)
     {
-        return $this->service->list(
-            $request->only(['search', 'project_id', 'assigned_to', 'status', 'per_page']),
-        );
+        return $this->service->list($request->validated());
     }
 
     public function show($id)
@@ -25,12 +23,12 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request)
     {
-        return $this->service->create($request->validate());
+        return $this->service->create($request->validated());
     }
 
     public function update(StoreTaskRequest $request, $id)
     {
-        return $this->service->update($id, $request->validate());
+        return $this->service->update($id, $request->validated());
     }
 
     public function updateStatus(UpdateTaskStatusRequest $request, $id)
