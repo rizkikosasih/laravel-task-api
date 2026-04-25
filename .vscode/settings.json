@@ -28,5 +28,16 @@
     "**/.history/**",
     "**/dist/**",
     "**/build/**"
+  ],
+  "sqltools.connections": [
+    {
+      "name": "Laravel Local",
+      "driver": "MySQL",
+      "server": "127.0.0.1",
+      "port": 3306,
+      "database": "task_api",
+      "username": "root",
+      "password": ""
+    }
   ]
 }

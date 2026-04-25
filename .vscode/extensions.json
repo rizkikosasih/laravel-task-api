@@ -10,6 +10,8 @@
     "ecmel.vscode-html-css",
     "zignd.html-css-class-completion",
     "recca0120.vscode-phpunit",
-    "onecentlin.phpunit-snippets"
+    "onecentlin.phpunit-snippets",
+    "humao.rest-client",
+    "mtxr.sqltools"
   ]
 }

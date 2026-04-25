@@ -99,3 +99,5 @@ _ide_helper_models.php
 
 #sementara
 /public/assets
+
+*.session.sql
