@@ -16,4 +16,9 @@ enum TaskStatus: string
             self::DONE => 'Done',
         };
     }
+
+    public function isDone(): bool
+    {
+        return $this === self::DONE;
+    }
 }
