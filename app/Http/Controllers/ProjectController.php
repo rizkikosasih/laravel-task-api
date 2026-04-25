@@ -9,9 +9,9 @@ class ProjectController extends Controller
 {
     public function __construct(protected ProjectService $service) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->service->getAll();
+        return $this->service->list($request->only(['search', 'created_by']));
     }
 
     public function store(Request $request)

@@ -7,9 +7,16 @@ use App\Repositories\Contracts\ProjectRepositoryInterface;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
-    public function all()
+    public function all(array $filters)
     {
-        return Project::latest()->paginate(10);
+        return Project::query()
+            ->when(
+                $filters['search'] ?? null,
+                fn($q, $search) => $q->where('name', 'like', "%{$search}%"),
+            )
+            ->when($filters['created_by'] ?? null, fn($q, $user) => $q->where('created_by', $user))
+            ->latest()
+            ->paginate($filters['per_page'] ?? 10);
     }
 
     public function find($id)

@@ -8,9 +8,9 @@ class ProjectService
 {
     public function __construct(protected ProjectRepositoryInterface $repo) {}
 
-    public function getAll()
+    public function list(array $filters)
     {
-        return $this->repo->all();
+        return $this->repo->all($filters);
     }
 
     public function getById($id)
