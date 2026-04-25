@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\TaskRepositoryInterface;
+use App\Enums\TaskStatus;
 
 class TaskService
 {
@@ -34,11 +35,17 @@ class TaskService
         // workflow guard
         $task = $this->repo->find($id);
 
-        if ($task->status === 'done' && $status !== 'done') {
-            throw new \Exception('Done task cannot be reverted');
+        $newStatus = TaskStatus::from($status);
+
+        if ($task->status->isDone() && !$newStatus->isDone()) {
+            return ['message' => 'Done task cannot be reverted'];
         }
 
-        return $this->repo->update($id, ['status' => $status]);
+        if ($task->status === $newStatus) {
+            return $task;
+        }
+
+        return $this->repo->update($id, ['status' => $newStatus]);
     }
 
     public function delete($id)
