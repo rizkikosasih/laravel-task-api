@@ -2,8 +2,9 @@
 @token = 3|YxDPbRvrUvL4cKTAbUne7YXfMTehFdKe6lp6MCHif3f56173
 
 ### List Tasks
-GET {{baseUrl}}/tasks?status=done
+GET {{baseUrl}}/tasks
 Authorization: Bearer {{token}}
+Content-Type: application/json
 Accept: application/json
 
 
@@ -11,6 +12,7 @@ Accept: application/json
 POST {{baseUrl}}/tasks
 Authorization: Bearer {{token}}
 Content-Type: application/json
+Accept: application/json
 
 {
   "project_id": 1,
@@ -25,12 +27,14 @@ Content-Type: application/json
 GET {{baseUrl}}/tasks/1
 Authorization: Bearer {{token}}
 Accept: application/json
+Content-Type: application/json
 
 
 ### Update Task
 PUT {{baseUrl}}/tasks/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
+Accept: application/json
 
 {
   "title": "Update Task API",
@@ -43,6 +47,7 @@ Content-Type: application/json
 ### Delete Task
 DELETE {{baseUrl}}/tasks/1
 Authorization: Bearer {{token}}
+Content-Type: application/json
 Accept: application/json
 
 
@@ -50,7 +55,8 @@ Accept: application/json
 PATCH {{baseUrl}}/tasks/1/status
 Authorization: Bearer {{token}}
 Content-Type: application/json
+Accept: application/json
 
 {
-  "status": "done"
+  "status": "in_progress"
 }

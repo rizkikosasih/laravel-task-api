@@ -5,11 +5,13 @@
 GET {{baseUrl}}/projects
 Authorization: Bearer {{token}}
 Accept: application/json
+Content-Type: application/json
 
 
 ### Create Project
 POST {{baseUrl}}/projects
 Authorization: Bearer {{token}}
+Accept: application/json
 Content-Type: application/json
 
 {
@@ -22,11 +24,13 @@ Content-Type: application/json
 GET {{baseUrl}}/projects/1
 Authorization: Bearer {{token}}
 Accept: application/json
+Content-Type: application/json
 
 
 ### Update Project
 PUT {{baseUrl}}/projects/1
 Authorization: Bearer {{token}}
+Accept: application/json
 Content-Type: application/json
 
 {
@@ -39,3 +43,4 @@ Content-Type: application/json
 DELETE {{baseUrl}}/projects/1
 Authorization: Bearer {{token}}
 Accept: application/json
+Content-Type: application/json
