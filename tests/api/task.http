@@ -1,0 +1,56 @@
+@baseUrl = http://127.0.0.1:8000/api
+@token = 3|YxDPbRvrUvL4cKTAbUne7YXfMTehFdKe6lp6MCHif3f56173
+
+### List Tasks
+GET {{baseUrl}}/tasks?status=done
+Authorization: Bearer {{token}}
+Accept: application/json
+
+
+### Create Task
+POST {{baseUrl}}/tasks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "project_id": 1,
+  "title": "Implement Task API",
+  "description": "Create CRUD for tasks",
+  "assigned_to": 2,
+  "due_date": "2026-05-01"
+}
+
+
+### Get Task Detail
+GET {{baseUrl}}/tasks/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+
+### Update Task
+PUT {{baseUrl}}/tasks/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Update Task API",
+  "description": "Update CRUD implementation",
+  "assigned_to": 2,
+  "due_date": "2026-05-05"
+}
+
+
+### Delete Task
+DELETE {{baseUrl}}/tasks/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+
+### Update Task Status
+PATCH {{baseUrl}}/tasks/1/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "status": "done"
+}

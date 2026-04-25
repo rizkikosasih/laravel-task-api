@@ -1,0 +1,23 @@
+@baseUrl = http://127.0.0.1:8000/api
+@token = 3|YxDPbRvrUvL4cKTAbUne7YXfMTehFdKe6lp6MCHif3f56173
+
+### List Comments by Task
+GET {{baseUrl}}/tasks/1/comments
+Authorization: Bearer {{token}}
+Accept: application/json
+
+
+### Create Comment
+POST {{baseUrl}}/tasks/1/comments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "message": "Working on this task now"
+}
+
+
+### Delete Comment
+DELETE {{baseUrl}}/tasks/1/comments/1
+Authorization: Bearer {{token}}
+Accept: application/json
