@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Http\Requests\Project\IndexProjectRequest;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
@@ -15,31 +16,46 @@ class ProjectController extends Controller
     public function index(IndexProjectRequest $request)
     {
         $projects = $this->service->getProjects($request->validated());
-        return ProjectResource::collection($projects);
+
+        return ApiResponse::paginated(
+            $projects,
+            ProjectResource::class,
+            'Project list retrieved successfully',
+        );
     }
 
     public function store(StoreProjectRequest $request)
     {
         $project = $this->service->create($request->validated(), $request->user()->id);
-        return ProjectResource::make($project);
+
+        return ApiResponse::success(
+            new ProjectResource($project),
+            'Project created successfully',
+            201,
+        );
     }
 
     public function show($id)
     {
         $project = $this->service->getById($id);
 
-        return ProjectResource::make($project);
+        return ApiResponse::success(
+            new ProjectResource($project),
+            'Project retrieved successfully',
+        );
     }
 
     public function update(UpdateProjectRequest $request, $id)
     {
         $project = $this->service->update($id, $request->validated());
 
-        return ProjectResource::make($project);
+        return ApiResponse::success(new ProjectResource($project), 'Project updated successfully');
     }
 
     public function destroy($id)
     {
-        return $this->service->delete($id);
+        $this->service->delete($id);
+
+        return ApiResponse::success(null, 'Project deleted successfully');
     }
 }

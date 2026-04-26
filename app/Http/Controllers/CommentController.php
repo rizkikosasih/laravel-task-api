@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Services\CommentService;
@@ -11,22 +12,34 @@ class CommentController extends Controller
 {
     public function __construct(protected CommentService $service) {}
 
-    public function index($taskId)
+    public function index(Request $request, $taskId)
     {
-        $comments = $this->service->getTaskComments($taskId);
+        $perPage = $request->get('per_page', 10);
 
-        return CommentResource::collection($comments);
+        $comments = $this->service->getTaskComments($taskId, $perPage);
+
+        return ApiResponse::paginated(
+            $comments,
+            CommentResource::class,
+            'Comment list retrieved successfully',
+        );
     }
 
     public function store(StoreCommentRequest $request, $taskId)
     {
         $comment = $this->service->create($taskId, $request->validated()['message']);
 
-        return CommentResource::make($comment);
+        return ApiResponse::success(
+            new CommentResource($comment),
+            'Comment created successfully',
+            201,
+        );
     }
 
     public function destroy($id)
     {
-        return $this->service->delete($id);
+        $this->service->delete($id);
+
+        return ApiResponse::success(null, 'Comment deleted successfully');
     }
 }

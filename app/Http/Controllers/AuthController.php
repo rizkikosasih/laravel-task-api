@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\AuthService;
@@ -13,43 +14,43 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $result = $this->authService->register($request->validate());
+        $result = $this->authService->register($request->validated());
 
-        return response()->json([
-            'message' => 'Register success',
-            'user' => $result['user'],
-            'token' => $result['token'],
-        ]);
+        return ApiResponse::success(
+            ['user' => $result['user'], 'token' => $result['token']],
+            'User registered successfully',
+            201,
+        );
     }
 
     public function login(LoginRequest $request)
     {
-        $result = $this->authService->login($request->validate());
+        $result = $this->authService->login($request->validated());
 
-        return response()->json([
-            'message' => 'Login success',
-            'user' => $result['user'],
-            'token' => $result['token'],
-        ]);
+        return ApiResponse::success(
+            ['user' => $result['user'], 'token' => $result['token']],
+            'Login successful',
+        );
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'message' => 'Logout success',
-        ]);
+        return ApiResponse::success(null, 'Logout successful');
     }
 
     public function me(Request $request)
     {
         $user = $request->user();
 
-        return response()->json([
-            'user' => $user->only(['id', 'name', 'email']),
-            'roles' => $user->getRoleNames(),
-            'permissions' => $user->getAllPermissions(),
-        ]);
+        return ApiResponse::success(
+            [
+                'user' => $user->only(['id', 'name', 'email']),
+                'roles' => $user->getRoleNames(),
+                'permissions' => $user->getAllPermissions(),
+            ],
+            'User profile retrieved successfully',
+        );
     }
 }

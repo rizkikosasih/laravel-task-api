@@ -7,9 +7,12 @@ use App\Repositories\Contracts\CommentRepositoryInterface;
 
 class CommentRepository implements CommentRepositoryInterface
 {
-    public function getByTaskId($taskId)
+    public function getByTaskId($taskId, $perPage = 5)
     {
-        return Comment::where('task_id', $taskId)->with('user:id,name')->latest()->get();
+        return Comment::where('task_id', $taskId)
+            ->with('user:id,name')
+            ->latest()
+            ->paginate($perPage);
     }
 
     public function create(array $data)
