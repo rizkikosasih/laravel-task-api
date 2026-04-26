@@ -29,18 +29,14 @@ Route::middleware('auth:sanctum')->group(function () {
             ->name('projects.create')
             ->middleware('permission:create project');
 
-        Route::get('/{id}', [ProjectController::class, 'show'])
-            ->name('projects.detail')
-            ->where('id', '[0-9]+');
+        Route::get('/{project}', [ProjectController::class, 'show'])->name('projects.detail');
 
-        Route::put('/{id}', [ProjectController::class, 'update'])
+        Route::put('/{project}', [ProjectController::class, 'update'])
             ->name('projects.update')
-            ->where('id', '[0-9]+')
             ->middleware('permission:update project');
 
-        Route::delete('/{id}', [ProjectController::class, 'destroy'])
+        Route::delete('/{project}', [ProjectController::class, 'destroy'])
             ->name('projects.delete')
-            ->where('id', '[0-9]+')
             ->middleware('permission:delete project');
     });
 
@@ -52,26 +48,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('tasks')->group(function () {
         Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
 
-        Route::get('/{id}', [TaskController::class, 'show'])
-            ->name('tasks.detail')
-            ->where('id', '[0-9]+');
+        Route::get('/{task}', [TaskController::class, 'show'])->name('tasks.detail');
 
         Route::post('/', [TaskController::class, 'store'])
             ->name('tasks.create')
             ->middleware('permission:create task');
 
-        Route::put('/{id}', [TaskController::class, 'update'])
+        Route::put('/{task}', [TaskController::class, 'update'])
             ->name('tasks.update')
-            ->where('id', '[0-9]+')
             ->middleware('permission:update task');
 
-        Route::patch('/{id}/status', [TaskController::class, 'updateStatus'])
-            ->name('tasks.status')
-            ->where('id', '[0-9]+');
+        Route::patch('/{task}/status', [TaskController::class, 'updateStatus'])->name(
+            'tasks.status',
+        );
 
-        Route::delete('/{id}', [TaskController::class, 'destroy'])
+        Route::delete('/{task}', [TaskController::class, 'destroy'])
             ->name('tasks.delete')
-            ->where('id', '[0-9]+')
             ->middleware('permission:delete task');
     });
 
@@ -88,8 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
             ->middleware('permission:create task comment');
     });
 
-    Route::delete('/comments/{id}', [CommentController::class, 'destroy'])
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
         ->name('comments.destroy')
-        ->where('id', '[0-9]+')
         ->middleware('permission:delete task comment');
 });
