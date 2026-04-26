@@ -9,9 +9,9 @@ class CommentService
 {
     public function __construct(protected CommentRepositoryInterface $repo) {}
 
-    public function listByTask($taskId)
+    public function getTaskComments($taskId)
     {
-        return $this->repo->getByTask($taskId);
+        return $this->repo->getByTaskId($taskId);
     }
 
     public function create($taskId, $message)

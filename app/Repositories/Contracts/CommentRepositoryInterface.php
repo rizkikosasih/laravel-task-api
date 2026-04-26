@@ -4,7 +4,7 @@ namespace App\Repositories\Contracts;
 
 interface CommentRepositoryInterface
 {
-    public function getByTask($taskId);
+    public function getByTaskId($taskId);
 
     public function create(array $data);
 

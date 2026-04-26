@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Comment\StoreCommentRequest;
+use App\Http\Resources\CommentResource;
 use App\Services\CommentService;
 use Illuminate\Http\Request;
 
@@ -12,12 +13,16 @@ class CommentController extends Controller
 
     public function index($taskId)
     {
-        return $this->service->listByTask($taskId);
+        $comments = $this->service->getTaskComments($taskId);
+
+        return CommentResource::collection($comments);
     }
 
     public function store(StoreCommentRequest $request, $taskId)
     {
-        return $this->service->create($taskId, $request->validated()['message']);
+        $comment = $this->service->create($taskId, $request->validated()['message']);
+
+        return CommentResource::make($comment);
     }
 
     public function destroy($id)

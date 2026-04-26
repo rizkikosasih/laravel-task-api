@@ -4,7 +4,7 @@ namespace App\Repositories\Contracts;
 
 interface ProjectRepositoryInterface
 {
-    public function all(array $filters);
+    public function paginate(array $filters);
     public function find($id);
     public function create(array $data);
     public function update($id, array $data);

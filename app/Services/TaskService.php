@@ -4,14 +4,15 @@ namespace App\Services;
 
 use App\Repositories\Contracts\TaskRepositoryInterface;
 use App\Enums\TaskStatus;
+use Illuminate\Validation\ValidationException;
 
 class TaskService
 {
     public function __construct(protected TaskRepositoryInterface $repo) {}
 
-    public function list($filters)
+    public function getTasks($filters)
     {
-        return $this->repo->all($filters);
+        return $this->repo->paginate($filters);
     }
 
     public function getById($id)
@@ -38,7 +39,9 @@ class TaskService
         $newStatus = TaskStatus::from($status);
 
         if ($task->status->isDone() && !$newStatus->isDone()) {
-            return ['message' => 'Done task cannot be reverted'];
+            throw ValidationException::withMessages([
+                'status' => 'Done task cannot be reverted',
+            ]);
         }
 
         if ($task->status === $newStatus) {

@@ -14,6 +14,9 @@
   "[blade]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "github.copilot.enable": {
+    "*": false
+  },
   "prettier.ignorePath": ".prettierignore",
   "prettier.configPath": ".prettierrc.json",
   "intelephense.files.exclude": [

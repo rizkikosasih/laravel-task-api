@@ -7,7 +7,7 @@ use App\Repositories\Contracts\ProjectRepositoryInterface;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
-    public function all(array $filters)
+    public function paginate(array $filters)
     {
         return Project::query()
             ->when(
@@ -15,23 +15,31 @@ class ProjectRepository implements ProjectRepositoryInterface
                 fn($q, $search) => $q->where('name', 'like', "%{$search}%"),
             )
             ->when($filters['created_by'] ?? null, fn($q, $user) => $q->where('created_by', $user))
+            ->withCount('tasks')
+            ->with(['user:id,name'])
             ->latest()
             ->paginate($filters['per_page'] ?? 10);
     }
 
     public function find($id)
     {
-        return Project::findOrFail($id);
+        return Project::with(['user:id,name'])
+            ->withCount('tasks')
+            ->findOrFail($id);
     }
 
     public function create(array $data)
     {
-        return Project::create($data);
+        return Project::with(['user:id,name'])
+            ->withCount('tasks')
+            ->create($data);
     }
 
     public function update($id, array $data)
     {
-        $project = Project::findOrFail($id);
+        $project = Project::with(['user:id,name'])
+            ->withCount('tasks')
+            ->findOrFail($id);
         $project->update($data);
         return $project;
     }

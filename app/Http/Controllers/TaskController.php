@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Task\IndexTaskRequest;
 use App\Http\Requests\Task\StoreTaskRequest;
 use App\Http\Requests\Task\UpdateTaskStatusRequest;
+use App\Http\Resources\TaskResource;
+use App\Models\Task;
 use App\Services\TaskService;
 
 class TaskController extends Controller
@@ -13,22 +15,30 @@ class TaskController extends Controller
 
     public function index(IndexTaskRequest $request)
     {
-        return $this->service->list($request->validated());
+        $tasks = $this->service->getTasks($request->validated());
+
+        return TaskResource::collection($tasks);
     }
 
     public function show($id)
     {
-        return $this->service->getById($id);
+        $task = $this->service->getById($id);
+
+        return TaskResource::make($task);
     }
 
     public function store(StoreTaskRequest $request)
     {
-        return $this->service->create($request->validated());
+        $task = $this->service->create($request->validated());
+
+        return TaskResource::make($task);
     }
 
     public function update(StoreTaskRequest $request, $id)
     {
-        return $this->service->update($id, $request->validated());
+        $task = $this->service->update($id, $request->validated());
+
+        return TaskResource::make($task);
     }
 
     public function updateStatus(UpdateTaskStatusRequest $request, $id)
@@ -37,7 +47,7 @@ class TaskController extends Controller
 
         $task = $this->service->updateStatus($id, $status);
 
-        return response()->json($task);
+        return TaskResource::make($task);
     }
 
     public function destroy($id)

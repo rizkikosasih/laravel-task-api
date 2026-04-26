@@ -7,7 +7,7 @@ use App\Repositories\Contracts\TaskRepositoryInterface;
 
 class TaskRepository implements TaskRepositoryInterface
 {
-    public function all(array $filters)
+    public function paginate(array $filters)
     {
         return Task::query()
             ->when(
@@ -23,23 +23,24 @@ class TaskRepository implements TaskRepositoryInterface
                 $filters['assigned_to'] ?? null,
                 fn($q, $assignedTo) => $q->where('assigned_to', $assignedTo),
             )
+            ->with(['project:id,name', 'user:id,name'])
             ->latest()
             ->paginate($filters['per_page'] ?? 10);
     }
 
     public function find(int $id)
     {
-        return Task::findOrFail($id);
+        return Task::with(['project:id,name', 'user:id,name'])->findOrFail($id);
     }
 
     public function create(array $data)
     {
-        return Task::create($data);
+        return Task::with(['project:id,name', 'user:id,name'])->create($data);
     }
 
     public function update(int $id, array $data)
     {
-        $task = Task::findOrFail($id);
+        $task = Task::with(['project:id,name', 'user:id,name'])->findOrFail($id);
         $task->update($data);
         return $task;
     }
