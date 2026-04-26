@@ -1,5 +1,5 @@
 @baseUrl = http://127.0.0.1:8000/api
-@token = 3|YxDPbRvrUvL4cKTAbUne7YXfMTehFdKe6lp6MCHif3f56173
+@token = TOKEN_DISINI
 
 ### List Tasks
 GET {{baseUrl}}/tasks
