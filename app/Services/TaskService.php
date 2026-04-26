@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Repositories\Contracts\TaskRepositoryInterface;
 use App\Enums\TaskStatus;
+use App\Exceptions\BusinessException;
 use App\Models\Task;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Validation\ValidationException;
 
 class TaskService
 {
@@ -38,9 +38,12 @@ class TaskService
         $newStatus = TaskStatus::from($status);
 
         if ($task->status->isDone() && !$newStatus->isDone()) {
-            throw ValidationException::withMessages([
-                'status' => 'Done task cannot be reverted',
-            ]);
+            throw new BusinessException(
+                message: 'Invalid Task Transition',
+                errors: [
+                    'status' => 'Done tasks are locked and cannot be reverted to a previous state.',
+                ],
+            );
         }
 
         if ($task->status === $newStatus) {
