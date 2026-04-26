@@ -20,7 +20,7 @@ Content-Type: application/json
 
 
 ### Delete Comment
-DELETE {{baseUrl}}/tasks/1/comments/1
+DELETE {{baseUrl}}/comments/3
 Authorization: Bearer {{token}}
 Accept: application/json
 Content-Type: application/json
