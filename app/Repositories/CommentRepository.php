@@ -3,26 +3,24 @@
 namespace App\Repositories;
 
 use App\Models\Comment;
+use App\Models\Task;
 use App\Repositories\Contracts\CommentRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CommentRepository implements CommentRepositoryInterface
 {
-    public function getByTaskId($taskId, $perPage = 5)
+    public function paginateByTaskId(Task $task, $perPage = 5): LengthAwarePaginator
     {
-        return Comment::where('task_id', $taskId)
-            ->with('user:id,name')
-            ->latest()
-            ->paginate($perPage);
+        return $task->comments()->with('user:id,name')->latest()->paginate($perPage);
     }
 
-    public function create(array $data)
+    public function create(array $data): Comment
     {
         return Comment::with('user:id,name')->create($data);
     }
 
-    public function delete($id)
+    public function delete(Comment $comment): bool
     {
-        $comment = Comment::findOrFail($id);
         return $comment->delete();
     }
 }

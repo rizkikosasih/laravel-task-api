@@ -4,10 +4,11 @@ namespace App\Repositories;
 
 use App\Models\Task;
 use App\Repositories\Contracts\TaskRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class TaskRepository implements TaskRepositoryInterface
 {
-    public function paginate(array $filters)
+    public function paginate(array $filters): LengthAwarePaginator
     {
         return Task::query()
             ->when(
@@ -28,25 +29,25 @@ class TaskRepository implements TaskRepositoryInterface
             ->paginate($filters['per_page'] ?? 10);
     }
 
-    public function find(int $id)
+    public function find(int $id): Task
     {
         return Task::with(['project:id,name', 'user:id,name'])->findOrFail($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): Task
     {
         return Task::with(['project:id,name', 'user:id,name'])->create($data);
     }
 
-    public function update(int $id, array $data)
+    public function update(Task $task, array $data): Task
     {
-        $task = Task::with(['project:id,name', 'user:id,name'])->findOrFail($id);
         $task->update($data);
-        return $task;
+
+        return $task->fresh(['project:id,name', 'user:id,name']);
     }
 
-    public function delete(int $id)
+    public function delete(Task $task): bool
     {
-        return Task::findOrFail($id)->delete();
+        return $task->delete();
     }
 }

@@ -4,38 +4,37 @@ namespace App\Services;
 
 use App\Repositories\Contracts\TaskRepositoryInterface;
 use App\Enums\TaskStatus;
+use App\Models\Task;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
 
 class TaskService
 {
     public function __construct(protected TaskRepositoryInterface $repo) {}
 
-    public function getTasks($filters)
+    public function getTasks($filters): LengthAwarePaginator
     {
         return $this->repo->paginate($filters);
     }
 
-    public function getById($id)
+    public function getById($id): Task
     {
         return $this->repo->find($id);
     }
 
-    public function create($data)
+    public function create($data): Task
     {
         $data['status'] = $data['status'] ?? 'todo';
         return $this->repo->create($data);
     }
 
-    public function update($id, $data)
+    public function update(Task $task, $data): Task
     {
-        return $this->repo->update($id, $data);
+        return $this->repo->update($task, $data);
     }
 
-    public function updateStatus($id, $status)
+    public function updateStatus(Task $task, $status): Task
     {
-        // workflow guard
-        $task = $this->repo->find($id);
-
         $newStatus = TaskStatus::from($status);
 
         if ($task->status->isDone() && !$newStatus->isDone()) {
@@ -48,11 +47,11 @@ class TaskService
             return $task;
         }
 
-        return $this->repo->update($id, ['status' => $newStatus]);
+        return $this->repo->update($task, ['status' => $newStatus]);
     }
 
-    public function delete($id)
+    public function delete(Task $task): bool
     {
-        return $this->repo->delete($id);
+        return $this->repo->delete($task);
     }
 }

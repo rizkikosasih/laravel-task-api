@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\Task\IndexTaskRequest;
 use App\Http\Requests\Task\StoreTaskRequest;
+use App\Http\Requests\Task\UpdateTaskRequest;
 use App\Http\Requests\Task\UpdateTaskStatusRequest;
 use App\Http\Resources\TaskResource;
+use App\Models\Task;
 use App\Services\TaskService;
 
 class TaskController extends Controller
@@ -24,13 +26,6 @@ class TaskController extends Controller
         );
     }
 
-    public function show($id)
-    {
-        $task = $this->service->getById($id);
-
-        return ApiResponse::success(new TaskResource($task), 'Task retrieved successfully');
-    }
-
     public function store(StoreTaskRequest $request)
     {
         $task = $this->service->create($request->validated());
@@ -38,18 +33,25 @@ class TaskController extends Controller
         return ApiResponse::success(new TaskResource($task), 'Task created successfully', 201);
     }
 
-    public function update(StoreTaskRequest $request, $id)
+    public function show(Task $task)
     {
-        $task = $this->service->update($id, $request->validated());
+        $task->load(['user:id,name', 'project:id,name']);
+
+        return ApiResponse::success(new TaskResource($task), 'Task retrieved successfully');
+    }
+
+    public function update(UpdateTaskRequest $request, Task $task)
+    {
+        $task = $this->service->update($task, $request->validated());
 
         return ApiResponse::success(new TaskResource($task), 'Task updated successfully');
     }
 
-    public function updateStatus(UpdateTaskStatusRequest $request, $id)
+    public function updateStatus(UpdateTaskStatusRequest $request, Task $task)
     {
         $status = $request->validated()['status'];
 
-        $task = $this->service->updateStatus($id, $status);
+        $task = $this->service->updateStatus($task, $status);
 
         return ApiResponse::success(new TaskResource($task), 'Task status updated successfully');
     }

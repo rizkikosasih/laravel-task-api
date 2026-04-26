@@ -7,6 +7,7 @@ use App\Http\Requests\Project\IndexProjectRequest;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
+use App\Models\Project;
 use App\Services\ProjectService;
 
 class ProjectController extends Controller
@@ -35,9 +36,9 @@ class ProjectController extends Controller
         );
     }
 
-    public function show($id)
+    public function show(Project $project)
     {
-        $project = $this->service->getById($id);
+        $project->load(['user:id,name'])->loadCount('tasks');
 
         return ApiResponse::success(
             new ProjectResource($project),
@@ -45,16 +46,16 @@ class ProjectController extends Controller
         );
     }
 
-    public function update(UpdateProjectRequest $request, $id)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        $project = $this->service->update($id, $request->validated());
+        $project = $this->service->update($project, $request->validated());
 
         return ApiResponse::success(new ProjectResource($project), 'Project updated successfully');
     }
 
-    public function destroy($id)
+    public function destroy(Project $project)
     {
-        $this->service->delete($id);
+        $this->service->delete($project);
 
         return ApiResponse::success(null, 'Project deleted successfully');
     }
