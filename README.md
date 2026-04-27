@@ -291,8 +291,6 @@ deleted_at
 app/
  ├── Http/
  │    ├── Controllers/
- │    ├── Requests/
- │    └── Resources/
  │
  ├── Services/
  │    ├── AuthService.php
@@ -315,4 +313,10 @@ app/
  │     ├── Project
  │     ├── Task
  │     └── Comment
+ │
+ ├── Enums/
+ ├── Exceptions/
+ ├── Helpers/
+ ├── Requests/
+ └── Resources/
 ```
