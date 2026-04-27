@@ -108,20 +108,20 @@ comment task
 
 Sistem ini menerapkan kombinasi **Role-Based Access Control (RBAC)** untuk izin fitur secara global dan **Attribute-Based Access Control (ABAC)** untuk validasi kepemilikan data (Ownership).
 
-| **Resource** | **Action**        | **Admin** | **Member** | **Penjelasan Logic**                                                       | **Pesan Error**                                           |
-| ------------ | ----------------- | --------- | ---------- | -------------------------------------------------------------------------- | --------------------------------------------------------- |
-| **Project**  | **Create**        | ✅        | ❌         | Semua Admin bisa buat Project.                                             | You do not have permission to create projects.            |
-|              | **View Detail**   | ✅        | ✅         | Admin bebas lihat. Member harus terlibat (punya task) di Project tersebut. | Access denied to project details.                         |
-|              | **Update/Delete** | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 | Only the project owner can modify or delete this project. |
-| **Task**     | **View List**     | ✅        | ✅         | Admin bebas lihat semua. Member hanya lihat task yang di-assign ke dia.    | Access denied to task list.                               |
-|              | **View Detail**   | ✅        | ✅         | Admin bebas lihat semua. Member hanya bisa lihat task miliknya.            | Access denied to task details.                            |
-|              | **Create**        | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 | Tasks can only be added by the project owner.             |
-|              | **Update Detail** | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 | Only the project owner can update task details.           |
-|              | **Update Status** | ✅\*      | ✅         | \*Admin Owner ATAU Member yang di-assign ke task tersebut.                 | You are not authorized to update this task status.        |
-|              | **Delete**        | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 | Task removal is restricted to the project owner.          |
-| **Comment**  | **View List**     | ✅        | ✅         | Terbuka bagi siapa saja yang punya akses ke Task tersebut.                 | Access denied to comments.                                |
-|              | **Create**        | ✅        | ✅         | Admin/Member yang terlibat di Task boleh kasih komentar.                   | You are not authorized to post comments here.             |
-|              | **Delete**        | ✅\*      | ✅\*       | \*Hanya pemilik komentar (**Owner**) yang boleh hapus komennya.            | You can only delete your own comments.                    |
+| **Resource** | **Action**        | **Admin** | **Member** | **Penjelasan Logic**                                                       |
+| ------------ | ----------------- | --------- | ---------- | -------------------------------------------------------------------------- |
+| **Project**  | **Create**        | ✅        | ❌         | Semua Admin bisa buat Project.                                             |
+|              | **View Detail**   | ✅        | ✅         | Admin bebas lihat. Member harus terlibat (punya task) di Project tersebut. |
+|              | **Update/Delete** | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 |
+| **Task**     | **View List**     | ✅        | ✅         | Admin bebas lihat semua. Member hanya lihat task yang di-assign ke dia.    |
+|              | **View Detail**   | ✅        | ✅         | Admin bebas lihat semua. Member hanya bisa lihat task miliknya.            |
+|              | **Create**        | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 |
+|              | **Update Detail** | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 |
+|              | **Update Status** | ✅\*      | ✅         | \*Admin Owner ATAU Member yang di-assign ke task tersebut.                 |
+|              | **Delete**        | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 |
+| **Comment**  | **View List**     | ✅        | ✅         | Terbuka bagi siapa saja yang punya akses ke Task tersebut.                 |
+|              | **Create**        | ✅        | ✅         | Admin/Member yang terlibat di Task boleh kasih komentar.                   |
+|              | **Delete**        | ✅\*      | ✅\*       | \*Hanya pemilik komentar (**Owner**) yang boleh hapus komennya.            |
 
 ---
 
