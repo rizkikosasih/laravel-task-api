@@ -125,20 +125,7 @@ Sistem ini menerapkan kombinasi **Role-Based Access Control (RBAC)** untuk izin 
 
 ---
 
-### 3. User Management
-
-Endpoint:
-
-```
-GET /api/users
-GET /api/users/{id}
-```
-
-Admin only.
-
----
-
-### 4. Project Management
+### 3. Project Management
 
 Endpoint:
 
@@ -162,7 +149,7 @@ deleted_at
 
 ---
 
-### 5. Task Management
+### 4. Task Management
 
 Endpoint:
 
@@ -199,7 +186,7 @@ done
 
 ---
 
-### 6. Comment System
+### 5. Comment System
 
 Endpoint:
 
@@ -222,19 +209,18 @@ deleted_at
 
 ---
 
-### 7. Pagination & Filtering
+### 6. Pagination & Filtering
 
 Contoh:
 
 ```
-GET /api/projects?page=1
-GET /api/tasks?status=todo
-GET /api/tasks?project_id=1
+GET /api/projects?page=1&per_page=10&search=qwerty
+GET /api/tasks?status=todo&project_id=1&assigned=1&search=test&page=1&per_page=10
 ```
 
 ---
 
-### 8. Technical Excellence
+### 7. Technical Excellence
 
 - **Service-Repository Pattern**: Memisahkan logika bisnis dari akses database untuk meningkatkan _maintainability_ dan mempermudah unit testing.
 - **Policy-Driven Authorization**: Menggunakan Laravel Policy secara menyeluruh untuk menangani otorisasi yang granular.
@@ -299,7 +285,7 @@ deleted_at
 
 ---
 
-## Struktur Folder Laravel (Best Practice)
+## Struktur Folder
 
 ```
 app/
