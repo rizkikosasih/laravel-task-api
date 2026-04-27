@@ -1,66 +1,332 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Task Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem manajemen tugas (Task Management) berbasis RESTful API yang dibangun dengan fokus pada keamanan data (**Data Isolation**), manajemen akses yang ketat (**RBAC**), dan arsitektur kode yang bersih (**Clean Architecture**) menggunakan **Service-Repository Pattern**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠️ Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Framework**: Laravel 12
+- **Database**: MySQL
+- **Authentication**: Laravel Sanctum
+- **Authorization**: Spatie Laravel Permission
+- **Architecture**: Service-Repository Pattern
+- Dev Tools:
+  - Prettier: Untuk konsistensi formatting kode (PHP & Blade).
+  - Laravel IDE Helper: Untuk autocompletion & static analysis yang lebih baik.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Installation & Setup
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Clone & Dependencies
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+git clone https://github.com/rizkikosasih/laravel-task-api.git nama-folder
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+cd nama-folder
 
-## Laravel Sponsors
+composer install
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+npm install --save-dev prettier @prettier/plugin-php prettier-plugin-blade
+```
 
-### Premium Partners
+- Environment & Keys
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```bash
+cp .env.example .env
 
-## Contributing
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Database & Security Seeder
 
-## Code of Conduct
+```bash
+php artisan migrate --seed
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- IDE Optimization (Optional)
 
-## Security Vulnerabilities
+```bash
+php artisan ide-helper:generate php artisan ide-helper:meta
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Run Application
 
-## License
+```bash
+php artisan serve
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🚀 Fitur Utama
+
+### 1. Authentication
+
+Endpoint:
+
+```
+POST /api/register
+POST /api/login
+POST /api/logout
+GET /api/me
+```
+
+Fungsi:
+
+- registrasi user
+- login menghasilkan **API token**
+- logout revoke token
+- melihat profil user
+
+---
+
+### 2. RBAC System
+
+Role:
+
+```
+admin
+member
+```
+
+Permission contoh:
+
+```
+create project
+update project
+delete project
+create task
+update task
+delete task
+comment task
+```
+
+---
+
+#### **Matrix Otorisasi & Kontrol Akses (RBAC & ABAC)**
+
+Sistem ini menerapkan kombinasi **Role-Based Access Control (RBAC)** untuk izin fitur secara global dan **Attribute-Based Access Control (ABAC)** untuk validasi kepemilikan data (Ownership).
+
+| **Resource** | **Action**        | **Admin** | **Member** | **Penjelasan Logic**                                                       | **Pesan Error**                                           |
+| ------------ | ----------------- | --------- | ---------- | -------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **Project**  | **Create**        | ✅        | ❌         | Semua Admin bisa buat Project.                                             | You do not have permission to create projects.            |
+|              | **View Detail**   | ✅        | ✅         | Admin bebas lihat. Member harus terlibat (punya task) di Project tersebut. | Access denied to project details.                         |
+|              | **Update/Delete** | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 | Only the project owner can modify or delete this project. |
+| **Task**     | **View List**     | ✅        | ✅         | Admin bebas lihat semua. Member hanya lihat task yang di-assign ke dia.    | Access denied to task list.                               |
+|              | **View Detail**   | ✅        | ✅         | Admin bebas lihat semua. Member hanya bisa lihat task miliknya.            | Access denied to task details.                            |
+|              | **Create**        | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 | Tasks can only be added by the project owner.             |
+|              | **Update Detail** | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 | Only the project owner can update task details.           |
+|              | **Update Status** | ✅\*      | ✅         | \*Admin Owner ATAU Member yang di-assign ke task tersebut.                 | You are not authorized to update this task status.        |
+|              | **Delete**        | ✅\*      | ❌         | \*Hanya Admin pembuat Project (**Owner**).                                 | Task removal is restricted to the project owner.          |
+| **Comment**  | **View List**     | ✅        | ✅         | Terbuka bagi siapa saja yang punya akses ke Task tersebut.                 | Access denied to comments.                                |
+|              | **Create**        | ✅        | ✅         | Admin/Member yang terlibat di Task boleh kasih komentar.                   | You are not authorized to post comments here.             |
+|              | **Delete**        | ✅\*      | ✅\*       | \*Hanya pemilik komentar (**Owner**) yang boleh hapus komennya.            | You can only delete your own comments.                    |
+
+---
+
+### 3. User Management
+
+Endpoint:
+
+```
+GET /api/users
+GET /api/users/{id}
+```
+
+Admin only.
+
+---
+
+### 4. Project Management
+
+Endpoint:
+
+```
+GET /api/projects
+POST /api/projects
+GET /api/projects/{id}
+PUT /api/projects/{id}
+DELETE /api/projects/{id}
+```
+
+Field project:
+
+```
+id
+name
+description
+timestamp
+deleted_at
+```
+
+---
+
+### 5. Task Management
+
+Endpoint:
+
+```
+GET /api/tasks
+POST /api/tasks
+GET /api/tasks/{id}
+PUT /api/tasks/{id}
+DELETE /api/tasks/{id}
+PATCH /api/tasks/{id}/status
+```
+
+Field task:
+
+```
+id
+project_id
+title
+description
+status
+assigned_to
+due_date
+timestamp
+deleted_at
+```
+
+Status task:
+
+```
+todo
+in_progress
+done
+```
+
+---
+
+### 6. Comment System
+
+Endpoint:
+
+```
+GET /api/tasks/{task}/comments
+POST /api/tasks/{task}/comments
+DELETE /api/comments/{id}
+```
+
+Field:
+
+```
+id
+task_id
+user_id
+message
+timestamp
+deleted_at
+```
+
+---
+
+### 7. Pagination & Filtering
+
+Contoh:
+
+```
+GET /api/projects?page=1
+GET /api/tasks?status=todo
+GET /api/tasks?project_id=1
+```
+
+---
+
+### 8. Technical Excellence
+
+- **Service-Repository Pattern**: Memisahkan logika bisnis dari akses database untuk meningkatkan _maintainability_ dan mempermudah unit testing.
+- **Policy-Driven Authorization**: Menggunakan Laravel Policy secara menyeluruh untuk menangani otorisasi yang granular.
+- **Conventional Commits**: Menggunakan standar pesan commit yang rapi untuk histori pengembangan yang profesional.
+
+---
+
+## Struktur Database
+
+### users
+
+```
+id
+name
+email
+password
+timestamp
+deleted_at
+```
+
+---
+
+### projects
+
+```
+id
+name
+description
+created_by
+timestamp
+deleted_at
+```
+
+---
+
+### tasks
+
+```
+id
+project_id
+title
+description
+status
+assigned_to
+due_date
+timestamp
+deleted_at
+```
+
+---
+
+### comments
+
+```
+id
+task_id
+user_id
+message
+timestamp
+deleted_at
+```
+
+---
+
+## Struktur Folder Laravel (Best Practice)
+
+```
+app/
+ ├── Http/
+ │    ├── Controllers/
+ │    ├── Requests/
+ │    └── Resources/
+ │
+ ├── Services/
+ │    ├── AuthService.php
+ │    ├── ProjectService.php
+ │    ├── TaskService.php
+ │    └── CommentService.php
+ │
+ ├── Repositories/
+ │    ├── Contracts/
+ │    │     ├── ProjectRepositoryInterface.php
+ │    │     ├── TaskRepositoryInterface.php
+ │    │     └── CommentRepositoryInterface.php
+ │    │
+ │    ├── ProjectRepository.php
+ │    ├── TaskRepository.php
+ │    └── CommentRepository.php
+ |
+ ├── Models/
+ │     ├── User
+ │     ├── Project
+ │     ├── Task
+ │     └── Comment
+```
