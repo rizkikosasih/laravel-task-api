@@ -3,7 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -11,54 +12,48 @@ class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // reset cache
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        /*
-        |-----------------------
-        | PERMISSIONS
-        |-----------------------
-        */
+        Schema::disableForeignKeyConstraints();
+
+        DB::table('role_has_permissions')->truncate();
+        DB::table('model_has_permissions')->truncate();
+        DB::table('permissions')->truncate();
+
+        Schema::enableForeignKeyConstraints();
+
+        $admin = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'admin']);
+        $member = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'member']);
+
         $permissions = [
+            'view project',
             'create project',
             'update project',
             'delete project',
 
+            'view task',
             'create task',
-            'update task',
+            'update task detail',
+            'update task status',
             'delete task',
 
-            'create task comment',
-            'delete task comment',
+            'view comment',
+            'create comment',
+            'delete comment',
         ];
 
-        $permissionModels = collect($permissions)->map(function ($permission) {
-            return Permission::firstOrCreate(['name' => $permission]);
-        });
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
 
-        /*
-        |-----------------------
-        | ROLES
-        |-----------------------
-        */
-        $admin = Role::firstOrCreate(['name' => 'admin']);
-        $member = Role::firstOrCreate(['name' => 'member']);
-
-        /*
-        |-----------------------
-        | ASSIGN PERMISSIONS
-        |-----------------------
-        */
-
-        // admin → semua permission
-        $admin->syncPermissions($permissionModels);
-
-        // member → limited access
+        $admin->syncPermissions(Permission::all());
         $member->syncPermissions([
-            Permission::findByName('create task'),
-            Permission::findByName('update task'),
-            Permission::findByName('create task comment'),
-            Permission::findByName('delete task comment'),
+            'view project',
+            'view task',
+            'view comment',
+            'update task status',
+            'create comment',
+            'delete comment',
         ]);
     }
 }
