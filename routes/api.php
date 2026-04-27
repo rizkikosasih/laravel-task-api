@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
+
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 
     Route::middleware('auth:sanctum')->group(function () {
@@ -25,11 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('projects')->group(function () {
         Route::get('/', [ProjectController::class, 'index'])->name('projects.index');
 
+        Route::get('/{project}', [ProjectController::class, 'show'])->name('projects.detail');
+
         Route::post('/', [ProjectController::class, 'store'])
             ->name('projects.create')
             ->middleware('permission:create project');
-
-        Route::get('/{project}', [ProjectController::class, 'show'])->name('projects.detail');
 
         Route::put('/{project}', [ProjectController::class, 'update'])
             ->name('projects.update')
@@ -47,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     */
     Route::prefix('tasks')->group(function () {
         Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
-
+        
         Route::get('/{task}', [TaskController::class, 'show'])->name('tasks.detail');
 
         Route::post('/', [TaskController::class, 'store'])
@@ -56,11 +57,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::put('/{task}', [TaskController::class, 'update'])
             ->name('tasks.update')
-            ->middleware('permission:update task');
+            ->middleware('permission:update task detail');
 
-        Route::patch('/{task}/status', [TaskController::class, 'updateStatus'])->name(
-            'tasks.status',
-        );
+        Route::patch('/{task}/status', [TaskController::class, 'updateStatus'])
+            ->name('tasks.status')
+            ->middleware('permission:update task status');
 
         Route::delete('/{task}', [TaskController::class, 'destroy'])
             ->name('tasks.delete')
@@ -77,10 +78,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/', [CommentController::class, 'store'])
             ->name('comments.store')
-            ->middleware('permission:create task comment');
+            ->middleware('permission:create comment');
     });
 
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
         ->name('comments.destroy')
-        ->middleware('permission:delete task comment');
+        ->middleware('permission:delete comment');
 });
