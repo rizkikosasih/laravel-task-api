@@ -5,12 +5,18 @@ namespace App\Repositories;
 use App\Models\Task;
 use App\Repositories\Contracts\TaskRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class TaskRepository implements TaskRepositoryInterface
 {
     public function paginate(array $filters): LengthAwarePaginator
     {
+        $user = Auth::user();
+
         return Task::query()
+            ->when($user->hasRole('member'), function ($q) use ($user) {
+                return $q->where('assigned_to', $user->id);
+            })
             ->when(
                 $filters['search'] ?? null,
                 fn($q, $search) => $q->where('title', 'like', "%{$search}%"),
@@ -26,7 +32,8 @@ class TaskRepository implements TaskRepositoryInterface
             )
             ->with(['project:id,name', 'user:id,name'])
             ->latest()
-            ->paginate($filters['per_page'] ?? 10);
+            ->paginate($filters['per_page'] ?? 10)
+            ->withQueryString();
     }
 
     public function find(int $id): Task

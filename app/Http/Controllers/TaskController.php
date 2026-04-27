@@ -35,7 +35,7 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
-        $task->load(['user:id,name', 'project:id,name']);
+        $task = $this->service->getById($task);
 
         return ApiResponse::success(new TaskResource($task), 'Task retrieved successfully');
     }
