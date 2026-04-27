@@ -27,7 +27,7 @@ class ProjectController extends Controller
 
     public function store(StoreProjectRequest $request)
     {
-        $project = $this->service->create($request->validated(), $request->user()->id);
+        $project = $this->service->create($request->validated());
 
         return ApiResponse::success(
             new ProjectResource($project),
@@ -38,7 +38,7 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        $project->load(['user:id,name'])->loadCount('tasks');
+        $project = $this->service->getById($project);
 
         return ApiResponse::success(
             new ProjectResource($project),

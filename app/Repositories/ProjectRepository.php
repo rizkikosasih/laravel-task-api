@@ -19,7 +19,8 @@ class ProjectRepository implements ProjectRepositoryInterface
             ->withCount('tasks')
             ->with(['user:id,name'])
             ->latest()
-            ->paginate($filters['per_page'] ?? 10);
+            ->paginate($filters['per_page'] ?? 10)
+            ->withQueryString();
     }
 
     public function find($id): Project
