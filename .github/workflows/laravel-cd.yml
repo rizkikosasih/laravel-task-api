@@ -20,11 +20,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Buat folder jika belum ada
-            if [ ! -d "D:/laragon/www/task-management-api" ]; then
-              mkdir -p "D:/laragon/www/task-management-api"
-            fi
-
             cd "D:/laragon/www/task-management-api"
 
             # Jika folder baru kosong, clone dulu. Jika sudah ada, tinggal pull.
