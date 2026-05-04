@@ -20,28 +20,34 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           fingerprint: ''
+          ssh_strict: false
+          debug: true
+          command_timeout: 30m
           script: |
             cd "D:/laragon/www/task-management-api"
 
+            # Update repositori
             if [ ! -d ".git" ]; then
               git clone https://github.com/rizkikosasih/laravel-task-api.git .
             else
-              git pull origin main
+              git fetch origin main
+              git reset --hard origin/main
             fi
 
-            echo "DB_CONNECTION=mysql" >> .env
-            echo "DB_HOST=127.0.0.1" >> .env
-            echo "DB_PORT=3306" >> .env
-            echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
-            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-            echo "DB_PASSWORD=" >> .env
+            # Composer & Migration
+            # Pastikan PHP & Composer sudah ada di PATH Windows
+            composer install --no-dev --optimize-autoloader --no-interaction
 
-            composer install --no-dev --optimize-autoloader
-
+            # Jalankan migrasi (Force karena di production environment)
             php artisan migrate --force
 
-            php artisan jwt:secret -n --force
-            php artisan permission:cache-reset
+            # JWT & Permissions
+            # Gunakan --skip-if-exists agar secret tidak berubah-ubah tiap deploy
+            php artisan jwt:secret -n --skip-if-exists
 
+            # Cache & Optimization
             php artisan optimize:clear
-            php artisan optimize
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan permission:cache-reset
