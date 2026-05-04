@@ -1,0 +1,55 @@
+name: Deployment
+
+on:
+  workflow_run:
+    workflows: ['Laravel CI'] # Sesuaikan dengan 'name' di file CI Anda
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Deploy to Laragon via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Buat folder jika belum ada
+            if [ ! -d "D:/laragon/www/task-management-api" ]; then
+              mkdir -p "D:/laragon/www/task-management-api"
+            fi
+
+            cd "D:/laragon/www/task-management-api"
+
+            # Jika folder baru kosong, clone dulu. Jika sudah ada, tinggal pull.
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/rizkikosasih/laravel-task-api.git .
+            else
+              git pull origin main
+            fi
+
+            echo "DB_CONNECTION=mysql" >> .env
+            echo "DB_HOST=127.0.0.1" >> .env
+            echo "DB_PORT=3306" >> .env
+            echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
+            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+            echo "DB_PASSWORD=" >> .env
+
+            composer install --no-dev --optimize-autoloader
+
+            # Jalankan migrasi (termasuk tabel spatie & jwt jika ada)
+            php artisan migrate --force
+
+            # Setup JWT & Spatie
+            php artisan jwt:secret -n --force
+            php artisan permission:cache-reset
+
+            # Final Optimization
+            php artisan optimize:clear
+            php artisan optimize
