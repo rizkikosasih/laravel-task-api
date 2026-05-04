@@ -21,20 +21,52 @@ jobs:
           MYSQL_DATABASE: testing
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mbstring, dom, curl, libxml, mysql
 
-      - name: Install Dependencies
-        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Optimize Composer
+        run: composer dump-autoload
 
       - name: Prepare Laravel
         run: |
           cp .env.example .env
           php artisan key:generate
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.15'
+          cache: npm
+
+      - name: Install Node Dependencies
+        run: npm install
+
+      - name: Run Formatter
+        run: npm run format
+
+      - name: Create Clean Artifact
+        run: |
+          mkdir -p artifact
+          cp -R app bootstrap config database public resources routes artisan composer.json composer.lock .env.example artifact/
+          zip -r build.zip artifact
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: laravel-build
+          path: build.zip
