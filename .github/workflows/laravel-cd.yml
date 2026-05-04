@@ -22,7 +22,6 @@ jobs:
           script: |
             cd "D:/laragon/www/task-management-api"
 
-            # Jika folder baru kosong, clone dulu. Jika sudah ada, tinggal pull.
             if [ ! -d ".git" ]; then
               git clone https://github.com/rizkikosasih/laravel-task-api.git .
             else
@@ -38,13 +37,10 @@ jobs:
 
             composer install --no-dev --optimize-autoloader
 
-            # Jalankan migrasi (termasuk tabel spatie & jwt jika ada)
             php artisan migrate --force
 
-            # Setup JWT & Spatie
             php artisan jwt:secret -n --force
             php artisan permission:cache-reset
 
-            # Final Optimization
             php artisan optimize:clear
             php artisan optimize
