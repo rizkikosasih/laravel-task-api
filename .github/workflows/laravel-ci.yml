@@ -1,7 +1,10 @@
 name: Laravel CI
 
-on: [push, pull_request]
-  branches: [ main ]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   tests:
@@ -18,17 +21,17 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        extensions: mbstring, dom, curl, libxml, mysql
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, dom, curl, libxml, mysql
 
-    - name: Install Dependencies
-      run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
 
-    - name: Prepare Laravel
-      run: |
-        cp .env.example .env
-        php artisan key:generate
+      - name: Prepare Laravel
+        run: |
+          cp .env.example .env
+          php artisan key:generate
