@@ -99,5 +99,5 @@ _ide_helper_models.php
 
 #sementara
 /public/assets
-
+tests/api/*.http
 *.session.sql
