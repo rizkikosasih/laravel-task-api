@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
+use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -14,16 +15,8 @@ class RolePermissionSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        Schema::disableForeignKeyConstraints();
-
-        DB::table('role_has_permissions')->truncate();
-        DB::table('model_has_permissions')->truncate();
-        DB::table('permissions')->truncate();
-
-        Schema::enableForeignKeyConstraints();
-
-        $admin = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'admin']);
-        $member = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'member']);
+        $admin = Role::firstOrCreate(['name' => 'admin']);
+        $member = Role::firstOrCreate(['name' => 'member']);
 
         $permissions = [
             'view project',
@@ -47,6 +40,7 @@ class RolePermissionSeeder extends Seeder
         }
 
         $admin->syncPermissions(Permission::all());
+
         $member->syncPermissions([
             'view project',
             'view task',
