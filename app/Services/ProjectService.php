@@ -37,7 +37,9 @@ class ProjectService
             throw new AuthorizationException('Only administrators can initialize new projects.');
         }
 
-        return $this->repo->create($data, Auth::id());
+        $data['created_by'] = Auth::id();
+
+        return $this->repo->create($data);
     }
 
     public function update(Project $project, array $data): Project
