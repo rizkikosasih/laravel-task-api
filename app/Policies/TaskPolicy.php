@@ -12,7 +12,7 @@ class TaskPolicy
      * Admin boleh lihat list task
      * Member boleh lihat list task jika dia terlibat di dalamnya
      * */
-    public function viewAny(User $user, Project $project): bool
+    public function viewAny(User $user): bool
     {
         return $user->hasPermissionTo('view task');
     }
