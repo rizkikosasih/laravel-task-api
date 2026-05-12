@@ -44,7 +44,9 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function create(array $data): Task
     {
-        return Task::with(['project:id,name', 'user:id,name'])->create($data);
+        $task = Task::create($data);
+
+        return $task->load(['project:id,name', 'user:id,name']);
     }
 
     public function update(Task $task, array $data): Task
