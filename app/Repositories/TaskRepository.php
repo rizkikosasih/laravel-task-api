@@ -31,7 +31,8 @@ class TaskRepository implements TaskRepositoryInterface
                 fn($q, $assignedTo) => $q->where('assigned_to', $assignedTo),
             )
             ->with(['project:id,name', 'user:id,name'])
-            ->latest()
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate($filters['per_page'] ?? 10)
             ->withQueryString();
     }

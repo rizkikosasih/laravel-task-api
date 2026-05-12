@@ -11,7 +11,12 @@ class CommentRepository implements CommentRepositoryInterface
 {
     public function paginateByTaskId(Task $task, $perPage = 5): LengthAwarePaginator
     {
-        return $task->comments()->with('user:id,name')->latest()->paginate($perPage);
+        return $task
+            ->comments()
+            ->with('user:id,name')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
     }
 
     public function create(array $data): Comment

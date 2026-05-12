@@ -18,7 +18,8 @@ class ProjectRepository implements ProjectRepositoryInterface
             ->when($filters['created_by'] ?? null, fn($q, $user) => $q->where('created_by', $user))
             ->withCount('tasks')
             ->with(['user:id,name'])
-            ->latest()
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate($filters['per_page'] ?? 10)
             ->withQueryString();
     }
