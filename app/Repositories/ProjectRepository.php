@@ -33,9 +33,9 @@ class ProjectRepository implements ProjectRepositoryInterface
 
     public function create(array $data): Project
     {
-        return Project::with(['user:id,name'])
-            ->withCount('tasks')
-            ->create($data);
+        $project = Project::create($data);
+
+        return $project->load(['user:id,name'])->loadCount('tasks');
     }
 
     public function update(Project $project, array $data): Project
