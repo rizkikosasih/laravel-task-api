@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('task_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->text('message');
-            $table->timestamps();
+            $table->timestamps(6);
             $table->softDeletes();
         });
     }
