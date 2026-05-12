@@ -10,4 +10,14 @@ class DateFormatter
     {
         return $date ? Carbon::parse($date)->locale('id')->translatedFormat('l, d F Y') : null;
     }
+
+    public static function idWithTime($date): ?string
+    {
+        return $date
+            ? Carbon::parse($date)
+                ->setTimezone('Asia/Jakarta')
+                ->locale('id')
+                ->translatedFormat('l, d F Y H:i:s.u')
+            : null;
+    }
 }
