@@ -1,5 +1,7 @@
 # Task Management API
 
+![Task Management API](.github/assets/og-image.png)
+
 Sistem manajemen tugas (Task Management) berbasis RESTful API yang dibangun dengan fokus pada keamanan data (**Data Isolation**), manajemen akses yang ketat (**RBAC**), dan arsitektur kode yang bersih (**Clean Architecture**) menggunakan **Service-Repository Pattern**.
 
 ---
