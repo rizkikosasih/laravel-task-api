@@ -59,6 +59,12 @@ php artisan ide-helper:generate php artisan ide-helper:meta
 php artisan serve
 ```
 
+- Run Automated Tests
+
+```bash
+php artisan test
+```
+
 ---
 
 ## 🚀 Fitur Utama

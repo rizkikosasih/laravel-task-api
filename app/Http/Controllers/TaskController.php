@@ -56,9 +56,9 @@ class TaskController extends Controller
         return ApiResponse::success(new TaskResource($task), 'Task status updated successfully');
     }
 
-    public function destroy($id)
+    public function destroy(Task $task)
     {
-        $this->service->delete($id);
+        $this->service->delete($task);
 
         return ApiResponse::success(null, 'Task deleted successfully');
     }

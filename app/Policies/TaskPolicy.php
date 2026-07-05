@@ -23,7 +23,7 @@ class TaskPolicy
      */
     public function view(User $user, Task $task): bool
     {
-        if ($user->hasPermissionTo('view project')) {
+        if ($user->hasRole('admin')) {
             return true;
         }
 
