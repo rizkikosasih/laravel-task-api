@@ -68,10 +68,10 @@ php artisan serve
 Endpoint:
 
 ```
-POST /api/register
-POST /api/login
-POST /api/logout
-GET /api/me
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/logout
+GET /api/auth/me
 ```
 
 Fungsi:
@@ -92,16 +92,21 @@ admin
 member
 ```
 
-Permission contoh:
+Daftar Permission:
 
 ```
+view project
 create project
 update project
 delete project
+view task
 create task
-update task
+update task detail
+update task status
 delete task
-comment task
+view comment
+create comment
+delete comment
 ```
 
 ---
@@ -134,9 +139,9 @@ Endpoint:
 ```
 GET /api/projects
 POST /api/projects
-GET /api/projects/{id}
-PUT /api/projects/{id}
-DELETE /api/projects/{id}
+GET /api/projects/{project}
+PUT /api/projects/{project}
+DELETE /api/projects/{project}
 ```
 
 Field project:
@@ -145,7 +150,9 @@ Field project:
 id
 name
 description
-timestamp
+created_by
+created_at
+updated_at
 deleted_at
 ```
 
@@ -158,10 +165,10 @@ Endpoint:
 ```
 GET /api/tasks
 POST /api/tasks
-GET /api/tasks/{id}
-PUT /api/tasks/{id}
-DELETE /api/tasks/{id}
-PATCH /api/tasks/{id}/status
+GET /api/tasks/{task}
+PUT /api/tasks/{task}
+DELETE /api/tasks/{task}
+PATCH /api/tasks/{task}/status
 ```
 
 Field task:
@@ -174,7 +181,8 @@ description
 status
 assigned_to
 due_date
-timestamp
+created_at
+updated_at
 deleted_at
 ```
 
@@ -195,7 +203,7 @@ Endpoint:
 ```
 GET /api/tasks/{task}/comments
 POST /api/tasks/{task}/comments
-DELETE /api/comments/{id}
+DELETE /api/comments/{comment}
 ```
 
 Field:
@@ -205,7 +213,8 @@ id
 task_id
 user_id
 message
-timestamp
+created_at
+updated_at
 deleted_at
 ```
 
@@ -217,7 +226,7 @@ Contoh:
 
 ```
 GET /api/projects?page=1&per_page=10&search=qwerty
-GET /api/tasks?status=todo&project_id=1&assigned=1&search=test&page=1&per_page=10
+GET /api/tasks?status=todo&project_id=1&assigned_to=1&search=test&page=1&per_page=10
 ```
 
 ---
@@ -238,8 +247,11 @@ GET /api/tasks?status=todo&project_id=1&assigned=1&search=test&page=1&per_page=1
 id
 name
 email
+email_verified_at
 password
-timestamp
+remember_token
+created_at
+updated_at
 deleted_at
 ```
 
@@ -252,7 +264,8 @@ id
 name
 description
 created_by
-timestamp
+created_at
+updated_at
 deleted_at
 ```
 
@@ -268,7 +281,8 @@ description
 status
 assigned_to
 due_date
-timestamp
+created_at
+updated_at
 deleted_at
 ```
 
@@ -281,7 +295,8 @@ id
 task_id
 user_id
 message
-timestamp
+created_at
+updated_at
 deleted_at
 ```
 
@@ -293,6 +308,8 @@ deleted_at
 app/
  ├── Http/
  │    ├── Controllers/
+ │    ├── Requests/
+ │    └── Resources/
  │
  ├── Services/
  │    ├── AuthService.php
@@ -309,16 +326,34 @@ app/
  │    ├── ProjectRepository.php
  │    ├── TaskRepository.php
  │    └── CommentRepository.php
- |
+ │
  ├── Models/
- │     ├── User
- │     ├── Project
- │     ├── Task
- │     └── Comment
+ │     ├── User.php
+ │     ├── Project.php
+ │     ├── Task.php
+ │     └── Comment.php
+ │
+ ├── Policies/
+ │     ├── ProjectPolicy.php
+ │     ├── TaskPolicy.php
+ │     └── CommentPolicy.php
  │
  ├── Enums/
+ │     └── TaskStatus.php
  ├── Exceptions/
+ │     ├── ApiExceptionTransformer.php
+ │     └── BusinessException.php
  ├── Helpers/
- ├── Requests/
- └── Resources/
+ │     ├── ApiResponse.php
+ │     └── DateFormatter.php
+ └── Providers/
+
+tests/
+ ├── Feature/
+ ├── Unit/
+ └── api/
+       ├── auth.http
+       ├── comment.http
+       ├── project.http
+       └── task.http
 ```
