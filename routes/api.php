@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
@@ -14,6 +15,22 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/me', [AuthController::class, 'me'])->name('me');
+    });
+});
+
+Route::prefix('oauth')->middleware('throttle:10,1')->group(function () {
+    Route::get('/{provider}/redirect', [SocialAuthController::class, 'redirect'])
+        ->where('provider', 'google|github')
+        ->name('oauth.redirect');
+
+    Route::get('/{provider}/callback', [SocialAuthController::class, 'callback'])
+        ->where('provider', 'google|github')
+        ->name('oauth.callback');
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/{provider}/link', [SocialAuthController::class, 'link'])
+            ->where('provider', 'google|github')
+            ->name('oauth.link');
     });
 });
 
